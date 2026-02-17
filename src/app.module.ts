@@ -12,8 +12,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule, EventEmitterModule.forRoot()],
+      imports: [EventEmitterModule.forRoot()],
       inject: [ConfigService],
       useFactory: (config:ConfigService) => ({
         
@@ -40,7 +41,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         ],
       })
     }),
-    AuthModule , filmModule, categoryModule, eventModule],
+    EventEmitterModule.forRoot(), AuthModule , filmModule, categoryModule, eventModule],
   controllers: [AppController],
   providers: [AppService],
 })

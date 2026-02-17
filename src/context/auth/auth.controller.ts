@@ -1,21 +1,18 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { loginDTO } from './types/auth.dto';
-import { UserLoggedPresenter } from './types/auth.presenter';
+import { Body, Controller, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { loginDTO, registerDTO } from './types/auth.dto';
 
 @Controller('auth')
-export class authController {
-    constructor(
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
-    ){}
-
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  login(@Body() body: loginDTO): UserLoggedPresenter {
-
-    const infoBDD = {username: 'UnUsername', password: 'Password123!'}
-
-    return plainToInstance(UserLoggedPresenter, infoBDD , { excludeExtraneousValues: true})
+  @Post('register')
+  register(@Body() body: registerDTO) {
+    return this.authService.register(body);
   }
 
+  @Post('login')
+  login(@Body() body: loginDTO) {
+    return this.authService.login(body);
+  }
 }

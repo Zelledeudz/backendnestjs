@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { authModule } from './context/auth/auth.module';
+import { AuthModule } from './context/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { filmModule } from './context/resource/film/film.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { categoryModule } from './context/resource/category/category.module';
+import { eventModule } from './core/events/event.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, EventEmitterModule.forRoot()],
       inject: [ConfigService],
       useFactory: (config:ConfigService) => ({
         
@@ -38,7 +40,7 @@ import { categoryModule } from './context/resource/category/category.module';
         ],
       })
     }),
-    authModule , filmModule, categoryModule],
+    AuthModule , filmModule, categoryModule, eventModule],
   controllers: [AppController],
   providers: [AppService],
 })

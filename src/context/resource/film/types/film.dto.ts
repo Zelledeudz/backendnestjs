@@ -11,6 +11,6 @@ export class RcsFilmDTO {
     @IsDateString()
     release: Date
 
-    /* @IsString()
-    category: RcsCategoryEntity["nameCategory"] */
+    @IsString()
+    category: string
 }

@@ -19,8 +19,20 @@ export class FilmRepository implements IFilmRepository {
         return entity
     }
 
-    async addFilm(title: string, description: string, release: Date): Promise<FilmEntity> {
-        const film = this.filmRepository.create({title,description,release});
-        return await this.filmRepository.save(film);
-    }
+    async addFilm(
+        title: string,
+        description: string,
+        release: Date,
+        categoryId: string
+      ): Promise<FilmEntity> {
+      
+          const film = this.filmRepository.create({
+              title,
+              description,
+              release,
+              categories: [{ id: categoryId }]
+          });
+      
+          return await this.filmRepository.save(film);
+      }
 }

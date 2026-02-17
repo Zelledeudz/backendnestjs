@@ -13,6 +13,6 @@ export class filmController {
     @Post("add")
       async createFilm(@Body() createFilmDto: RcsFilmDTO) {
           const releaseDate = new Date(createFilmDto.release);
-          return await this.filmService.createFilm(createFilmDto.title, createFilmDto.description, releaseDate);
+          return await this.filmService.createFilm(createFilmDto.title, createFilmDto.description, releaseDate, createFilmDto.category);
       }
 }

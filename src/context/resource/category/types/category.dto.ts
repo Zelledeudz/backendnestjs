@@ -1,10 +1,14 @@
-import { IsNumber, IsString } from "class-validator"
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
-// Information d'entrée
 export class RcsCategoryDTO {
+    @ApiProperty({ example: 'Action' })
+    @IsString()
     nameCategory: string;
-  }
-  
-  export class UpdateCategoryDTO {
+}
+
+export class UpdateCategoryDTO {
+    @ApiPropertyOptional({ example: 'Comedy' })
+    @IsString()
     nameCategory?: string;
-  }
+}

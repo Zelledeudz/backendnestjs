@@ -1,22 +1,39 @@
-import { Injectable } from "@nestjs/common";
-import { UserCredentialsEntity } from "./entities/user-credentials-entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { IAuthRepository } from "./auth.repository.interface";
-import { Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IAuthRepository } from './auth.repository.interface';
+import { UserCredentialsEntity } from './entities/user-credentials-entity';
 
 @Injectable()
 export class AuthRepository implements IAuthRepository {
     constructor(
-       @InjectRepository(UserCredentialsEntity) 
-       private readonly credentialRepository: Repository<UserCredentialsEntity>
+        @InjectRepository(UserCredentialsEntity)
+        private readonly userCredentialsRepo: Repository<UserCredentialsEntity>,
     ) {}
 
-    async findCredentialByUsername(username: string): Promise<UserCredentialsEntity | null> {
-        return await this.credentialRepository.findOne({ where: { username } });
+    async findCredentialByEmail(email: string): Promise<UserCredentialsEntity | null> {
+        return this.userCredentialsRepo.findOne({
+            where: { email },
+            select: ['id', 'email', 'passwordHash', 'permissions'], 
+        });
     }
 
-    async createCredential(username: string, passwordHash: string): Promise<UserCredentialsEntity> {
-        const user = this.credentialRepository.create({ username, passwordHash });
-        return await this.credentialRepository.save(user);
+    async findById(id: string): Promise<UserCredentialsEntity | null> {
+        return this.userCredentialsRepo.findOne({ where: { id } });
+    }
+
+    async createCredential(data: Partial<UserCredentialsEntity>): Promise<UserCredentialsEntity> {
+        const credential = this.userCredentialsRepo.create(data);
+        return this.userCredentialsRepo.save(credential);
+    }
+
+    async checkEmailExists(email: string): Promise<boolean> {
+        const count = await this.userCredentialsRepo.count({ where: { email } });
+        return count > 0;
+    }
+
+    async updatePermissions(id: string, permissions: bigint): Promise<UserCredentialsEntity> {
+        await this.userCredentialsRepo.update(id, { permissions });
+        return this.userCredentialsRepo.findOneOrFail({ where: { id } });
     }
 }

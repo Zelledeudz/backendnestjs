@@ -3,6 +3,9 @@ import { UserCredentialsEntity } from "./entities/user-credentials-entity";
 export const AUTH_REPOSITORY = Symbol('AUTH_REPOSITORY')
 
 export interface IAuthRepository {
-    findCredentialByUsername(username: string): Promise<UserCredentialsEntity | null>;
-    createCredential(username: string, passwordHash: string): Promise<UserCredentialsEntity>;
+   findCredentialByEmail(email: string): Promise<UserCredentialsEntity | null>;
+    findById(id: string): Promise<UserCredentialsEntity | null>;
+    createCredential(data: Partial<UserCredentialsEntity>): Promise<UserCredentialsEntity>;
+    checkEmailExists(email: string): Promise<boolean>;
+    updatePermissions(id: string, permissions: bigint): Promise<UserCredentialsEntity>;
 }

@@ -7,6 +7,8 @@ import { UserCredentialsEntity } from './entities/user-credentials-entity';
 import { PasswordHasherService } from './password-hasher.service';
 import { SendUserRegisteredEventHandler } from './handlers/send-user-registered.handler';
 import { ConfigModule } from '@nestjs/config';
+import { TokenJWTService } from './token-JWT.service';
+import { JWT_TOKEN_SERVICE } from './ports/jwt.port';
 
 @Module({
   imports: [ConfigModule, TypeOrmModule.forFeature([UserCredentialsEntity])],
@@ -16,7 +18,9 @@ import { ConfigModule } from '@nestjs/config';
     AuthRepository,
     PasswordHasherService,
     SendUserRegisteredEventHandler,
-  ],
-  exports: [AuthService],
+      {provide: JWT_TOKEN_SERVICE, useClass: TokenJWTService },
+    TokenJWTService, 
+    ],
+  exports: [JWT_TOKEN_SERVICE, TokenJWTService, AuthService],
 })
 export class AuthModule {}

@@ -1,16 +1,68 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post } from "@nestjs/common"
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import { categoryService } from "./category.service";
-import { RcsCategoryEntity } from "./entities/category-entity";
+import { RcsCategoryDTO } from "./types/category.dto";
+import { UpdateCategoryDTO } from "./types/category.dto";
 import { CATEGORY_REPOSITORY } from "./category.repository.interface";
+import { PermissionsGuard } from "src/core/permissions/permission.guard";
+import { RequirePermission } from "src/core/permissions/require.permission";
+import { Permission } from "src/core/permissions/permission";
 
-@Controller('category')
+@Controller("category")
+@UseGuards(PermissionsGuard)
 export class categoryController {
-    constructor(
-      @Inject(CATEGORY_REPOSITORY) private readonly categoryService: categoryService
-    ) {}
+  constructor(
+    @Inject(CATEGORY_REPOSITORY)
+    private readonly categoryService: categoryService
+  ) {}
 
-    @Post("add")
-      async createCategory(@Body() CategoryDto: RcsCategoryEntity) {
-          return await this.categoryService.createCategory(CategoryDto.nameCategory);
-      }
+  @Post("add")
+  @RequirePermission(Permission.USER_READ)
+  async createCategory(@Body() createCategoryDto: RcsCategoryDTO) {
+    return await this.categoryService.createCategory(
+      createCategoryDto.nameCategory
+    );
+  }
+
+  @Get("all")
+  @RequirePermission(Permission.USER_READ)
+  async getAllCategories() {
+    return await this.categoryService.getAllCategories();
+  }
+
+  @Get(":id")
+  @RequirePermission(Permission.USER_READ)
+  async getCategoryById(@Param("id") id: string) {
+    return await this.categoryService.getCategoryById(id);
+  }
+
+  @Patch("update/:id")
+  @RequirePermission(Permission.USER_READ)
+  async updateCategory(
+    @Param("id") id: string,
+    @Body() updateCategoryDto: UpdateCategoryDTO
+  ) {
+    return await this.categoryService.updateCategoryById(
+      id,
+      updateCategoryDto.nameCategory
+    );
+  }
+
+  @Delete("delete/:id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @RequirePermission(Permission.USER_READ)
+  async deleteCategory(@Param("id") id: string) {
+    return await this.categoryService.deleteCategoryById(id);
+  }
 }

@@ -1,5 +1,6 @@
 import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { RcsCategoryEntity } from "../../category/entities/category-entity";
+import { UserCredentialsEntity } from "src/context/auth/entities/user-credentials-entity";
 
 @Entity("film")
 export class FilmEntity {
@@ -19,4 +20,7 @@ export class FilmEntity {
     @ManyToMany(() => RcsCategoryEntity, { nullable: false })
     @JoinTable()
     categories: RcsCategoryEntity[];
+
+    @ManyToMany(() => UserCredentialsEntity, user => user.favoriteFilms)
+    favoritedBy: UserCredentialsEntity[];
 }

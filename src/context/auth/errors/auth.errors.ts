@@ -1,16 +1,16 @@
 import { DomainError } from "src/core/errors/domain.errors";
 
 
-export class UsernameExistError extends DomainError {
+export class EmailExistError extends DomainError {
     constructor(
         fields?: Record<string, string[]>
     ) {
         super({
-            code: "USERNAME_ALREADY_EXIST",
-            message: "Username déjà lié a un compte",
+            code: "EMAIL_ALREADY_EXIST",
+            message: "Email déjà lié a un compte",
             statusCode: 400,
             fields: fields ?? {
-                username: ["Username already exists"]
+                email: ["Email already exists"]
             },
             details: {}
         })
@@ -37,10 +37,10 @@ export class AuthReferralCodeNotFoundError extends DomainError {
     constructor() {
       super({
         code: 'INVALID_CREDENTIALS',
-        message: 'Invalid username or password',
+        message: 'Invalid email or password',
         statusCode: 401,
         fields: {
-          credentials: ['Invalid username or password'],
+          credentials: ['Invalid email or password'],
         },
         details: {},
       });
